@@ -1,0 +1,245 @@
+
+<!DOCTYPE html>
+<html ng-app=app>
+<head>
+<meta charset=UTF-8>
+<style>
+div{
+	font-weight: bold;
+}
+</style>
+</head>
+<body>
+
+<div>111</div>
+<div>222</div>
+<div>333</div>
+<div>444</div>
+<div>555</div>
+<span>666</span>
+<p class="p">777</p>
+</body>
+<script>
+
+(function(global){
+	function jQuery(selector) {
+		return new jQuery.fn.init(selector);
+	}
+
+	jQuery.fn = jQuery.prototype = {
+		constructor: jQuery,
+		init: function(selector) {
+			if (jQuery.type(selector) == 'string') {
+				const elements = document.querySelectorAll(selector);
+
+				for(var i=0; i<elements.length; i++) {
+					this[i] = elements[i];
+				}
+
+				this.length = elements.length;
+			} else if (selector.nodeType == 1) {
+				this[0] = selector;
+				this.length = 1;
+			}
+			
+		},
+		/*
+		css: function(name, value){
+			for(var i=0; i<this.length; i++) {
+				this[i].style[name] = value;
+			}
+		}*/
+	}
+
+	jQuery.fn.init.prototype = jQuery.fn;
+
+
+	// 
+	jQuery.fn.extend = jQuery.extend = function(...args){
+		
+		var target = source = [];
+		source = [...args];
+
+		if (args.length == 1) {
+			target = this;
+		} else {
+			target = args[0];
+
+		}
+
+		Object.assign(target, ...source);
+		/*
+		if (this === jQuery) {
+			target = args[0];
+			source.splice(0, 1);
+		} else {
+			target = this;
+		}
+		*/
+
+		/*
+		source.forEach(function(item, index){
+			Object.keys(item).forEach(function(value, index2){
+				target[value] = item[value];
+			})
+		})
+		*/
+
+		/*
+		source.forEach((item,index)=>{
+			Object.keys(item).forEach((value)=>{
+				target[value] = item[value];
+			})
+		})
+		*/
+
+		/**
+		// 方法1
+		var target = args[0];
+		for (let i=1; i<args.length; i++) {
+			var arg = args[i];
+			for (let key in arg) {
+				target[key] = arg[key];
+			}
+		}
+		
+		// 方法2 es6扩展运算符方法
+		var target = args[0];
+
+		for (let i=1; i<args.length; i++) {
+			target = {...target, ...args[i]}
+		}
+		*/
+
+		return target;
+	}
+
+	jQuery.extend({
+		each(obj, callback){
+			if ((length in obj) && obj.length > 0) {
+				for (let i=0; i<obj.length; i++) {
+					callback.call(obj[i], i, obj[i]);
+					//callback(i, obj[i]);
+				}
+			} else {
+				for (let i in obj) {
+					callback.call(obj[i], i, obj[i]);
+					//callback(i, obj[i]);
+				}
+			}
+			
+		},
+		type(data){
+			let dataType = Object.prototype.toString.call(data);
+			var type = dataType.replace('[object ', '').replace(']', '').toLowerCase();
+			return type;
+		}
+	});
+
+	jQuery.fn.extend({
+		css(...args){
+			if (args.length === 1) {
+				var args1 = args[0],
+					args2 = args[1];
+				let type = jQuery.type(args1);
+				if (type == 'string') {
+					return window.getComputedStyle(this[0], null).getPropertyValue(args1);
+				} else {
+					/*
+					this.each(function(){
+						var _that = this;
+						jQuery.each(args1, function(name, value){
+							_that.style[name] = value;
+						})
+					})
+					*/
+
+					/*
+					this.each(function(){
+						jQuery.each(args1, (name, value)=>{
+							this.style[name] = value;
+						})
+					})
+					*/
+
+					jQuery.each(args1, (name, value) => {
+						this.css(name, value);
+					})
+					return this;
+					
+				}
+			} else {
+				// 设置属性
+				this.each(function(){
+					this.style[args[0]] = args[1];
+					
+				})
+				return this;
+			}
+		},
+		each(callback){
+			jQuery.each(this, callback);
+		},
+		show(){
+			this.css("display", "block");
+		},
+		hide(){
+			this.css("display", "none");
+		},
+		toggle(){
+			this.each(function(){
+				let $this = $(this);
+				$this.css("display") == "none" ? $this.show() : $this.hide();
+			})
+		}
+	});
+
+	global.$ = global.jQuery = jQuery;
+})(window);
+
+$("div").css({"color":"red","font-size":"18px"});
+
+
+
+//$("div").css("color");
+//$("div").css("background-color");
+//$("div").css("color");
+//$("div").css("color", "blue");
+
+
+/*
+var obj = {};
+$.extend(obj, {a:'111'}, {b:'222'}, {c:'333', d:'444'});
+$("div").each(function(i, ele){
+	console.log(i, ele);
+	//ele.style.color="blue"
+})
+
+$.each([111,222,333], function(i, v){
+	console.log(i, v);
+})
+
+$.each(obj, function(i, v){
+	console.log(i, v);
+})
+
+$.each({ 0:100,1:200,2:300,length:3 },function(index,value){
+    console.log(index,value);
+})
+
+$.each( [{name:"user1"},{age:"28"},{length:"10"}],function(i, v){
+    console.log(i, v);
+
+} )
+
+
+$.type(1);
+*/
+/*
+$.fn.extend({
+	dataPicker:function(){
+		console.log('datapicker');
+	}
+})
+*/
+</script>

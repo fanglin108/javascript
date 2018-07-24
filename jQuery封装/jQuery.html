@@ -1,0 +1,252 @@
+
+<!DOCTYPE html>
+<html ng-app=app>
+<head>
+<meta charset=UTF-8>
+<style>
+#id2{
+
+}
+</style>
+</head>
+<body>
+
+<div id="id1">111</div>
+<div id="id2">222</div>
+<div>333</div>
+</body>
+<script>
+
+// 自调用函数
+(function(global){
+	function jQuery(selector) {
+		return new jQuery.fn.init(selector);
+	}
+
+	jQuery.fn = jQuery.prototype = {
+		constructor: jQuery,
+		init: function(selector){
+			console.log(jQuery.type(selector));
+			if (jQuery.type(selector) == 'string') {
+				const elements = document.querySelectorAll(selector);
+
+				// 为了后续的DOM操作方便，将这些获取的DOM元素放到自己this身上，让自己变成一个像数组一样的伪数组。
+				for (let i=0; i<elements.length; i++) {
+					this[i] = elements[i];
+				}
+				this.length = elements.length;
+			} else if (selector.nodeType == 1) {
+				this[0] = selector;
+				this.length = 1;
+			}
+		},
+
+		css: function(...args){
+			var type = jQuery.type(...args);
+			if (args.length == 1) {
+				if (type == 'string') {
+					return window.getComputedStyle(this[0], null)[args[0]];
+				} else if (type == 'object') {
+					jQuery.each(...args, (name, value) => {
+						this.css(name, value);
+						/*
+						// 或者
+						jQuery.each(this, function(index, ele){
+							ele.style[name] = value;
+						})
+						*/
+					})
+					/*
+					// 方法2，不使用箭头函数的话
+					var _that = this;
+					jQuery.each(...args, function(name, value){
+						jQuery.each(_that, function(index, ele){
+							ele.style[name] = value;
+						})
+					})
+					*/
+				}
+				return this;
+			} else {
+				jQuery.each(this, function(index, ele){
+					this.style[args[0]] = args[1];
+				})
+				return this;
+			}
+		},
+
+		hide: function(){
+			this.css("display", "none");
+		},
+		show: function(){
+			this.css("display", "block");
+		},
+		toggle: function(){
+			jQuery.each(this, function(index, ele){
+				//console.log(this, $.type(this));
+				window.getComputedStyle(ele, null)['display'] == 'none' ? $(this).css("display", "block") : $(this).css("display", "none");
+				/*
+				//  或者
+				if (window.getComputedStyle(ele, null)['display'] == 'none') {
+					ele.style['display'] = 'block';
+				} else {
+					ele.style['display'] = 'none';
+				}
+				*/
+			})
+		}
+	}
+
+	// 封装extend方法
+	jQuery.fn.extend = jQuery.extend = function(...args){
+		var target;
+		var source = [...args];
+	
+		if (args.length == 1) {
+			target = this;
+		} else {
+			target = args[0];
+			source.splice(0, 1);
+		}
+
+		Object.assign(target, ...source);
+
+		return target;
+	}
+
+	// 封装工具类方法
+	jQuery.extend({
+		// each循环
+		each:function(obj, callback){
+			if (length in obj && obj.length > 0) {
+				for (let i=0; i<obj.length; i++) {
+					callback.call(obj[i], i, obj[i]);
+				}
+			} else {
+				for (let i in obj) {
+					callback.call(obj[i], i, obj[i]);
+				}
+			}
+		},
+		// 判断数据类型
+		type:function(data){
+			var type = Object.prototype.toString.call(data)
+			return type.replace('[object ', '').replace(']', '').toLowerCase();
+		}
+	})
+
+	jQuery.fn.extend({
+		each:function(callback){
+			jQuery.each(this, callback)
+		}
+	})
+
+	// new jQuery.prototype.init构造函数的实例中,this仅指向构造函数的实例自身，并不能访问到jQuery.prototype中方法，
+	// -->所以，此处修改init的原型让其继承自jQuery.prorotype
+	jQuery.fn.init.prototype = jQuery.fn;
+
+	global.$ = global.jQuery = jQuery;
+})(window);
+
+//$("div").css("color", "red");
+
+var obj = {name:'fanglin'};
+$.extend(obj, {a:111, b:222}, {c:333});
+
+
+// $.fn.extend是编写jQuery插件的核心方法，其本质是把这些方法加到jquery.prototype原型中
+const events = [];
+$.fn.extend({
+	// 绑定事件
+	on:function(type, callback){
+		$.each(this, function(){
+			this.addEventListener(type, callback)
+			events.push({ele:this, type:type, callback:callback});
+			//console.log(events);
+		})
+
+		// 实现链式编程
+		return this;
+	}, 
+
+	// 解绑事件
+	off:function(type){
+		
+		$.each(this, function(index, ele){
+			var evts = events.filter(function(evt){
+				return type == evt.type && evt.ele == ele;
+			})
+			evts.forEach(function(e){
+				ele.removeEventListener(type, e.callback);
+			})
+
+			/*
+			// 或者
+			$.each(events, function(index2, ele2){
+				if (type == this.type && ele == this.ele) {
+					ele.removeEventListener(type, this.callback)
+				}
+			})
+			*/
+			return this;
+		})
+	},
+	append:function(domEle){
+		$.each(this, function(index, ele){
+			var oldHmtl = this.innerHTML;
+			this.innerHTML = oldHmtl + domEle;
+			//this.innerHTML = domEle + oldHmtl;
+		})
+	}
+})
+
+$("div").css("color", "pink");
+$("div").css({"color": "blue", 'font-weight':'bold'});
+var fontWeight = $("div").css("font-weight");
+
+$("div").on("click", function(e){
+	console.log(1, e.target.innerHTML, this);
+});
+
+$("#id2").on("mouseover", function(e){
+	console.log("id2-1",  e.target.innerHTML);
+});
+
+$("#id2").off("mouseover");
+
+/*
+// 判断类型
+$.type(1);
+$.type([1,2,3]);
+$.type({name:11,age:22});
+$.type(function(){});
+*/
+
+/*
+$.each(obj, function(index, value){
+	console.log(index, value);
+})
+
+$.each(['aa','bb','cc'], function(index, value){
+	console.log(index, value);
+})
+
+$.each([{name:'user1', age:111}, {name:'user2', age:222}], function(index, value){
+	console.log(index, this.name, this.age);
+})
+
+$("div").each(function(index, value){
+	console.log(index, value);
+})
+*/
+
+var element  = document.getElementById('id2'); // assuming ul exists
+var fragment = document.createDocumentFragment();
+
+var div = document.createElement('div');
+div.innerHTML = "<span>hahaha</span>";
+fragment.appendChild(div);
+
+element.appendChild(fragment);
+
+</script>
