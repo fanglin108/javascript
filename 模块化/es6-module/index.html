@@ -1,0 +1,20 @@
+
+<!DOCTYPE html>
+<html ng-app=app>
+<head>
+<meta charset=UTF-8>
+</head>
+<body>
+
+<div>
+    <p>es6模块化使用。</p>
+    <p>注意：es6 module必须url访问</p>
+</div>
+<script type="module">
+import cart, {const_price, fn} from './js/cart.js'
+console.log(cart);
+fn();
+console.log(const_price);
+</script>
+</body>
+</html>
