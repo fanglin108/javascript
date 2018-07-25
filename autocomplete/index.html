@@ -1,0 +1,47 @@
+
+<!DOCTYPE html>
+<html ng-app=app>
+<head>
+<meta charset=UTF-8>
+<script src="./js/jquery-3.3.1.js"></script>
+<script src="./js/autocomplete.js"></script>
+<style>
+
+</style>
+</head>
+<body>
+
+<div id="main" class="main">
+	<input type="text" name="name" autocomplete="off" />
+</div>
+
+<script>
+$("input[name='name']").autocomplete({
+	source: function(request, response){
+	
+		response([
+			{
+				label: 'name11',
+				value: 111
+			},
+			{
+				label: 'name22',
+				value: 222
+			},
+			{
+				label: 'name33',
+				value: 333
+			}
+		])
+	
+	},
+
+	select:function(item){
+		console.log('select:', item);
+	}
+})
+
+
+</script>
+</body>
+</html>
