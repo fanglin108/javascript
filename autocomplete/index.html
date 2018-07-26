@@ -22,7 +22,7 @@ $("input[name='name']").autocomplete({
 		response([
 			{
 				label: 'name11',
-				value: 111
+				value: 111,
 			},
 			{
 				label: 'name22',
@@ -30,13 +30,20 @@ $("input[name='name']").autocomplete({
 			},
 			{
 				label: 'name33',
-				value: 333
+				value: 333,
+				category:'group3',
+			},
+			{
+				label: 'name33-2',
+				value: 3332,
+				category:'group3',
 			}
 		])
 	
 	},
 
 	select:function(item){
+		$("input[name='name']").val(item.label);
 		console.log('select:', item);
 	}
 })
