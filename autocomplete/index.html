@@ -6,37 +6,62 @@
 <script src="./js/jquery-3.3.1.js"></script>
 <script src="./js/autocomplete.js"></script>
 <style>
-
+li {
+    list-style: none;
+}
+a {
+    text-decoration: none;
+    color: #656565;
+}
 </style>
 </head>
 <body>
 
 <div id="main" class="main">
-	<input type="text" name="name" autocomplete="off" />
+	选择：<input type="text" name="name" autocomplete="off" />
+</div>
+
+
+<br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />
+<div id="div2">
+<p>测试jquery插入dom元素</p>
 </div>
 
 <script>
 $("input[name='name']").autocomplete({
 	source: function(request, response){
-	
 		response([
 			{
-				label: 'name11',
+				label: '重庆市',
 				value: 111,
 			},
 			{
-				label: 'name22',
+				label: '贵州省',
 				value: 222
 			},
 			{
-				label: 'name33',
+				label: '甘肃省',
 				value: 333,
-				category:'group3',
 			},
 			{
-				label: 'name33-2',
-				value: 3332,
-				category:'group3',
+				label: '北京市',
+				value: '1',
+				category:'华北',
+			},
+			{
+				label: '天津市',
+				value: '2',
+				category:'华北',
+			},
+			{
+				label: '河北省',
+				value: '3',
+				category:'华北',
+			},
+			{
+				label: '山西省',
+				value: '4',
+				category:'华北',
 			}
 		])
 	
@@ -48,6 +73,20 @@ $("input[name='name']").autocomplete({
 	}
 })
 
+
+var $ul = $("<ul></ul>");
+var liStr = `
+	<li>111</li>
+	<li>222</li>
+	<li>333</li>
+`;
+$ul.html(liStr);
+$("#div2").append($ul);
+
+// 事件委托绑定
+$ul.on("click", "li", function(){
+	alert(this.innerText);
+})
 
 </script>
 </body>

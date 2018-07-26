@@ -21,14 +21,14 @@
 			$this.on('blur', function() {
 				setTimeout(function() {
 					$dropdown.hide();
-				}, 200, this);
+				}, 200);
 			});
 
 			// Keydown
 			$this.on('keydown', function(event) {
 				switch(event.keyCode) {
 					case 27: // escape
-						this.hide();
+						$dropdown.hide();
 						break;
 					default:
 						this.request();
@@ -38,7 +38,6 @@
 
 			// Click
 			this.click = function(event) {
-				console.log(event.target)
 				event.preventDefault();
 
 				var value = $(event.target).parent().attr('data-value');
@@ -61,16 +60,17 @@
 			}
 
 			// Hide
+			/*
 			this.hide = function() {
 				$dropdown.hide();
 			}
+			*/
 
 			// Request
 			this.request = function() {
 				clearTimeout(this.timer);
 
 				this.timer = setTimeout(function(object) {
-					//object.source($(object).val(), $.proxy(object.response, object));
 					object.source($(object).val(), object.response.bind(object));
 				}, 200, this);
 			}
@@ -113,13 +113,12 @@
 				if (html) {
 					this.show();
 				} else {
-					this.hide();
+					$dropdown.hide();
 				}
 
 				$dropdown.html(html);
 			}
 
-			//$dropdown.on('click', '> li > a', $.proxy(this.click, this));
 			$dropdown.on('click', '> li > a', this.click.bind(this));
 			$this.after($dropdown);
 		});
