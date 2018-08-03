@@ -12,37 +12,37 @@
 </body>
 <script>
 function getUser(){
-	return new Promise((resolve, reject) => {
-		setTimeout(() => {
-			var userInfo = {ok:true, name:'fanglin',age:30};
-			if (userInfo.ok)
-			{
-				resolve(userInfo);
-			}
-			else
-			{
-				reject("get userinfo error");
-			}
-		}, 2000)
-	})
+    return new Promise((resolve, reject) => {
+        setTimeout(() => {
+            var userInfo = {ok:true, name:'fanglin',age:30};
+            if (userInfo.ok)
+            {
+                resolve(userInfo);
+            }
+            else
+            {
+                reject("get userinfo error");
+            }
+        }, 2000)
+    })
 }
 
 function getDetail(res)
 {
-	return new Promise((resolve, reject) => {
-		setTimeout(() => {
-			console.log(res);
-			resolve('get user detail info.');
-		}, 1000)
-	})
+    return new Promise((resolve, reject) => {
+        setTimeout(() => {
+            console.log(res);
+            resolve('get user detail info.');
+        }, 1000)
+    })
 }
 
 getUser().then((res)=>{
-	return getDetail(res);
+    return getDetail(res);
 }).then((res) => {
-	console.log(res);
+    console.log(res);
 }).catch(resError => {
-	console.log(resError);
+    console.log(resError);
 })
 </script>
 </html>

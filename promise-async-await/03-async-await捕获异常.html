@@ -12,38 +12,38 @@
 </body>
 <script>
 function getHello() {
-	return new Promise((resolve, reject) => {
-		setTimeout(() => {
-			let res = "hello2";
-			if (res == 'hello') {
-				resolve('hello');
-			} else {
-				reject("error");
-			}
-		}, 1000)
-	})
+    return new Promise((resolve, reject) => {
+        setTimeout(() => {
+            let res = "hello2";
+            if (res == 'hello') {
+                resolve('hello');
+            } else {
+                reject("error");
+            }
+        }, 1000)
+    })
 }
 
 var obj = {
-	say: async ()=>{
-		let res = await getHello();
-		console.log('say', res);
-	},
-	run: async ()=>{
-		let res = await getHello();
-		console.log('run', res);
-	}
+    say: async ()=>{
+        let res = await getHello();
+        console.log('say', res);
+    },
+    run: async ()=>{
+        let res = await getHello();
+        console.log('run', res);
+    }
 }
 
 // 需求，先执行say，再执行run。
 var fn = async function(){
-	// 捕获异常
-	try{
-		await obj.say();
-		await obj.run();
-	}catch(e) {
-		console.log(e);
-	}
+    // 捕获异常
+    try{
+        await obj.say();
+        await obj.run();
+    }catch(e) {
+        console.log(e);
+    }
 }
 fn()
 
