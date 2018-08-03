@@ -1,0 +1,23 @@
+
+<!DOCTYPE html>
+<html ng-app=app>
+<head>
+<meta charset=UTF-8>
+<style>
+</style>
+</head>
+<body>
+<script>
+// jsonp类型发起跨域请求，其原理跟<script>脚本请求一样，因此使用jsonp时也只能使用GET方式发起跨域请求。跨域请求需要服务端配合，设置callback，才能完成跨域请求。 
+function getInfo(params)
+{
+	console.log(params);
+	console.log(params.name, params.age);
+}
+
+var script = document.createElement("script");
+script.src="http://localhost/test.php?callback=getInfo";
+document.body.appendChild(script);
+</script>
+</body>
+</html>
